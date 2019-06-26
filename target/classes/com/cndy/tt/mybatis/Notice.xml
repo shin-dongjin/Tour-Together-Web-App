@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cndy.tt.mybatis.Notice">
+	
+	<resultMap id="NoticeResult" type="Notice">
+        <result property="notice_no" column="NOTICE_NO"/>
+        <result property="admin_id" column="ADMIN_ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="content" column="CONTENT"/>
+        <result property="postdate" column="POSTDATE"/>
+	</resultMap>
+	
+	<insert id="insertNotice" parameterType="Notice">
+ 		insert into NOTICE values(
+ 			NOTICE_NO_SEQ.nextval, 'admin', #{title}, #{content}, SYSDATE
+ 		)
+	</insert>
+	
+	<delete id="deleteNotice" parameterType="long">
+		delete from NOTICE where NOTICE_NO = #{notice_no}
+	</delete>
+	
+	<select id="selectNotice" parameterType="long" resultType="Notice">
+		select * from NOTICE where NOTICE_NO = #{notice_no}
+	</select>
+	
+	<update id="updateNotice" parameterType="Notice">
+		update NOTICE set TITLE=#{title}, CONTENT=#{content} where NOTICE_NO=#{notice_no}
+	</update>
+	
+   <select id="selectAllNotice" resultType="Notice">
+     select * from notice where POSTDATE = (select MAX(POSTDATE) from notice)
+   </select>
+</mapper>

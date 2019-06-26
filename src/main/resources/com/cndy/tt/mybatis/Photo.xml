@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace= "com.cndy.tt.mybatis.Photo">
+ 	<resultMap id="photoResult" type="Photo">
+ 		<result property="email" column="EMAIL"/>
+ 		<result property="photo_path" column="PHOTO_PATH"/>
+ 	</resultMap>
+ 	
+ 	<insert id="insert" parameterType="Photo" >
+ 		insert into PHOTO values(#{email}, #{photo_path})
+ 	</insert>
+ 	
+ 	<select id="select" parameterType="String" resultType="Photo">
+ 		select PHOTO_PATH from PHOTO where EMAIL=#{email}
+ 	</select>
+ 	
+ 	<select id="selectPath" parameterType="long" resultType="String">
+ 		select PHOTO_PATH from PHOTO where EMAIL=(select EMAIL from TOUR_DIARY where DIARY_NO=#{diary_no})
+	</select>
+ </mapper>

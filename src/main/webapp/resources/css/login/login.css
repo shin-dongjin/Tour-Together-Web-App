@@ -1,0 +1,65 @@
+<style media="screen">
+	#fb-btn {
+		margin-top: 20px;
+	}
+	
+	#logout, #feed {
+		display: none
+	}
+	
+ 	#profile:link, #profile:visited {
+		background-color: #f44336;
+		color: white;
+/* 		padding: 14px 25px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block; */
+	} 
+	#logout, #close {
+		background-color: #333333;
+		color: white;
+/* 		padding: 14px 25px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block; */
+	}
+	
+/* 	#profile:hover, #profile:active {
+		background-color: red;
+	} */
+	
+	.white_content {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    opacity:0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+    z-index: 1000;/*z-index: 메인페이지가 모달창 뚫고 나와서 설정 */
+}
+.white_content:target {
+    opacity:1;
+    pointer-events: auto;
+}
+.white_content > div {
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	width: 50%;
+	height: 50%;
+	padding: 16px;
+	border: 16px solid grey;
+	background-color: white;
+	overflow: auto;	
+}
+
+
+
+
+
+</style>

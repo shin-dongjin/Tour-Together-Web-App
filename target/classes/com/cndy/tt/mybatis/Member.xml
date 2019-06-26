@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cndy.tt.mybatis.Member">
+	
+	<resultMap id="MemberResult" type="Member">
+        <result property="id" column="ID"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="enabled" column="ENABLED"/>
+        <result property="first_name" column="FIRST_NAME"/>
+        <result property="last_name" column="LAST_NAME"/>
+        <result property="member_class" column="MEMBER_CLASS"/>
+        <result property="join_date" column="JOIN_DATE"/>
+        <result property="use_date" column="USE_DATE"/>
+        <result property="intro" column="INTRO"/>
+        <result property="country" column="COUNTRY"/>
+        <result property="gender" column="GENDER"/>
+        <result property="birthday" column="BIRTHDAY"/>
+        <result property="email" column="EMAIL"/>
+		<result property="telephone" column="TELEPHONE"/>
+		<result property="login_type" column="LOGIN_TYPE"/>
+	</resultMap>
+	
+	<insert id="memberInsert" parameterType="Member">
+ 		insert into MEMBER_INFO values(#{id}, #{password, jdbcType=VARCHAR}, 1, #{first_name}, #{last_name},
+ 			0, SYSDATE, SYSDATE, #{intro, jdbcType=VARCHAR}, #{country, jdbcType=VARCHAR}, 
+ 			#{gender, jdbcType=VARCHAR}, #{birthday, jdbcType=VARCHAR}, #{email, jdbcType=VARCHAR}, #{telephone, jdbcType=VARCHAR},
+ 			#{login_type})
+ 	</insert>
+
+	<select id="checkIdSelect" resultType="long">
+     <![CDATA[
+    	select count(*) from MEMBER_INFO where id = #{id}
+  	  ]]>
+	</select>
+	
+	<select id="profileSelect" resultType="Member">
+		select * from MEMBER_INFO where id = #{id}
+	</select>
+	
+	<update id="profileUpdate" parameterType="Member">
+		update MEMBER_INFO
+		set first_name = #{first_name}, last_name = #{last_name}, intro = #{intro, jdbcType=VARCHAR}, 
+		country = #{country, jdbcType=VARCHAR}, gender = #{gender, jdbcType=VARCHAR}, birthday = #{birthday, jdbcType=VARCHAR}, email = #{email},
+		login_type = #{login_type} 
+		where ID = #{id, jdbcType=VARCHAR}
+	</update>
+	
+	<select id="autoComplete" parameterType="String" resultType="Member">
+	select first_name from  (select * from MEMBER_INFO where ID in (select ID from MEMBER_AUTHORITY where AUTHORITY='ROLE_USER'))
+	 where first_name like concat('%',concat(UPPER(#{b}),'%'))
+	   or first_name like concat('%',concat(LOWER(#{b}),'%'))
+	</select>  
+	
+	   <select id="initDateSelectAll" resultType="String">
+       <![CDATA[select TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') from 
+          (select * from MEMBER_INFO where ID in 
+             (select ID from MEMBER_AUTHORITY where AUTHORITY='ROLE_USER')) 
+       where TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') <= TO_CHAR(SYSDATE, 'YYYY-MM-DD') 
+       GROUP BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD')
+       ORDER BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD')]]>
+    </select>
+    
+    <select id="initCountSelectAll" resultType="Integer">
+       <![CDATA[select COUNT(*) from 
+             (select * from MEMBER_INFO where ID in 
+                (select ID from MEMBER_AUTHORITY where AUTHORITY='ROLE_USER')) 
+       where TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') <= TO_CHAR(SYSDATE, 'YYYY-MM-DD') 
+       GROUP BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD')
+       ORDER BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD')]]>
+    </select>
+    
+    <select id="newDateList" resultType="String" parameterType="map">
+       <![CDATA[select TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') from MEMBER_INFO where TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') >= #{startDate} 
+		and TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') <= #{endDate} GROUP BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') ORDER BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD')]]>
+    </select>
+    
+    <select id="newCountList" resultType="int" parameterType="map">
+       <![CDATA[select COUNT(*) from MEMBER_INFO where TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') >= #{startDate} 
+       	and TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') <= #{endDate} GROUP BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD') ORDER BY TO_CHAR(JOIN_DATE, 'YYYY-MM-DD')]]>
+    </select>
+    
+    <select id="chartF" resultType="int">
+       select count(*) from MEMBER_INFO where GENDER = 'female'
+    </select>
+    
+    <select id="chartM" resultType="int">
+       select count(*) from MEMBER_INFO where GENDER = 'male'
+    </select>
+    
+    <select id="chartClsA" resultType="int">
+       select count(*) from MEMBER_INFO where MEMBER_CLASS = 0
+    </select>
+    
+    <select id="chartClsP" resultType="int">
+       select count(*) from MEMBER_INFO where MEMBER_CLASS = 1
+    </select>
+    
+    <select id="chartCountry" resultType="Member">
+    	select COUNTRY from MEMBER_INFO group by COUNTRY
+    </select>
+    <select id="chartCountryCount" resultType="int">
+    	select COUNT(*) from MEMBER_INFO group by COUNTRY
+    </select>
+    
+    <update id="blockUser" parameterType="String">
+    	update MEMBER_INFO set ENABLED=0 where ID=#{id}
+    </update>
+    
+    <update id="unblockUser" parameterType="String">
+    	update MEMBER_INFO set ENABLED=1 where ID=#{id}
+    </update>
+</mapper>

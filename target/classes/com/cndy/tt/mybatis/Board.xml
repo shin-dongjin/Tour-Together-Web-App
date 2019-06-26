@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.mybatis.BoardDTO">
+	
+	<resultMap id="addrResult" type="BoardDTO">
+        <result property="board_no" column="BOARD_NO"/>
+        <result property="id" column="ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="board_type" column="BOARD_TYPE"/>
+        <result property="board_content" column="BOARD_CONTENT"/>
+        <result property="start_date" column="START_DATE"/>
+        <result property="end_date" column="END_DATE"/>
+        <result property="tour_time" column="TOUR_TIME"/>
+        <result property="region" column="REGION"/>
+        <result property="budget" column="BUDGET"/>
+        <result property="company" column="COMPANY"/>
+        <result property="write_date" column="WRITE_DATE"/>
+        <result property="read_count" column="READ_COUNT"/>
+        <result property="photo_path" column="PHOTO_PATH"/>
+	</resultMap>
+	
+	<resultMap id="chatingResult" type="java.util.HashMap">
+		<result javaType="String" property="room_num" column="CHATING_ROOM"/>
+		<result javaType="String" property="chating_member" column="CHATING_MEMBER1"/>
+		<result javaType="String" property="user_member" column="CHATING_MEMBER2"/>
+		<result javaType="String" property="chating_content" column="CHATING_CONTENT"/>
+	</resultMap>
+	
+	<resultMap id="locationResult" type="java.util.HashMap">
+		<result javaType="String" property="jb" column="JB"/>
+		<result javaType="String" property="ib" column="IB"/>
+	</resultMap>
+	
+	<select id="boardSelectAll" resultType="BoardDTO">
+   		<![CDATA[select * from (select * from board where board_type=#{type} order by board_no desc) where rownum<10]]>
+    </select>
+	
+	<select id="contentSelect" parameterType="long" resultType="BoardDTO">
+   		<![CDATA[select * from board where board_no=#{board_no}]]>
+    </select>
+    
+    <select id="boardPhoto" parameterType="String" resultType="String">
+    	<![CDATA[select photo_path from photo where email = (select email from member_info where id = #{id})]]>
+    </select>
+    
+    <select id="locationSelect" parameterType="long" resultMap="locationResult">
+   		<![CDATA[select * from location where board_no=#{board_no}]]>
+    </select>
+    
+    <select id="chatingSelect" parameterType="String" resultMap="chatingResult">
+   		<![CDATA[select CHATING_MEMBER1, CHATING_MEMBER2 from chating where CHATING_MEMBER1=#{id} or CHATING_MEMBER2=#{id} order by chating_room desc]]>
+    </select>
+	
+	<delete id="diaryDelete" parameterType="long">
+	   delete from BOARD where BOARD_NO = #{board_no}
+	</delete>
+	
+	<select id="pageSelectAllWithKeyword" resultType="BoardDTO" parameterType="map">
+		<![CDATA[select * 		
+				from 
+					(select rownum rn, b.* 
+					from 
+						(select * 
+						from board 
+						where board_type=#{type} AND ${searchOpt} LIKE '%'||#{keyword}||'%' order by board_no desc) b 
+					where rownum<#{page} and board_type=#{type} order by board_no desc) p 
+				where p.rn>=#{page}-9 order by board_no desc]]>
+	</select>	
+	
+	<insert id="boardInsert" parameterType="BoardDTO" useGeneratedKeys="true" keyProperty="board_no">
+		<selectKey keyProperty="board_no" resultType="int" order="BEFORE">
+			select BOARD_SEQ.nextval from DUAL
+		</selectKey>
+		insert into Board values(#{board_no},#{id}, #{title}, #{board_type},#{board_content},#{start_date},#{end_date},#{tour_time},#{region},#{budget},#{company},sysdate,0,#{photo_path})
+	</insert>
+	<insert id="locationInsert" parameterType="hashmap">
+		insert into LOCATION values(#{board_no},#{jb},#{ib})
+	</insert>
+	<select id="Chating_search" parameterType="hashmap" resultType="int">
+		<![CDATA[select nvl(min(chating_room),0) from chating where chating_member1 in (#{chating_member},#{user_member}) and chating_member2 in (#{chating_member},#{user_member})]]>
+	</select>
+	<select id="Chating_select" parameterType="hashmap" resultMap="chatingResult">
+		<![CDATA[select * from chating where chating_member1 in (#{chating_member},#{user_member}) and chating_member2 in (#{chating_member},#{user_member})]]>
+	</select>
+	<insert id="chating_insert" parameterType="hashmap" useGeneratedKeys="true" keyProperty="chat_no">
+		<selectKey keyProperty="chat_no" resultType="String" order="BEFORE">
+			select chating_room_seq.nextval from DUAL
+		</selectKey>
+		insert into CHATING values(#{chat_no},#{chating_member},#{user_member},#{chating_content})
+	</insert>
+	
+	<select id="touristCount" resultType="int">
+		select count(*) from BOARD where BOARD_TYPE=20
+	</select>
+	
+	<select id="guideCount" resultType="int">
+		select count(*) from BOARD where BOARD_TYPE=10
+	</select>
+	
+	<select id="boardThisMonth" resultType="int">
+		select count(*) from BOARD where WRITE_DATE between (select trunc(sysdate,'mm') as START_DATE FROM dual) and (select last_day(sysdate) as LAST_DATE FROM dual)
+	</select>
+	
+	<select id="boardThisWeek" resultType="int">
+		select count(*) from BOARD where WRITE_DATE between (select sysdate + 1 - to_char(sysdate, 'd') from dual) and (select sysdate + 7 - to_char(sysdate, 'd') from dual)
+	</select>
+	
+	<update id="blockContent" parameterType="map">
+		update BOARD set TITLE='[Blocked Post]', BOARD_CONTENT='[This post was detected as inappropriated content.]', PHOTO_PATH=NULL where BOARD_NO=#{board_no}
+	</update>
+</mapper>

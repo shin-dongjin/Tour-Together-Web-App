@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/cndy/tt/board/BoardController.java=UTF-8
+encoding//src/main/java/com/cndy/tt/board/BoardDAO.java=UTF-8
+encoding//src/main/java/com/cndy/tt/comment/CommentController.java=UTF-8
+encoding//src/main/java/com/cndy/tt/diary/DiaryController.java=UTF-8
+encoding//src/main/java/com/cndy/tt/member/MemberController.java=UTF-8
+encoding//src/main/java/com/cndy/tt/paging/PagingController.java=UTF-8
+encoding//src/main/webapp/WEB-INF/views/index.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/index1.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/member/profile.jsp=UTF-8

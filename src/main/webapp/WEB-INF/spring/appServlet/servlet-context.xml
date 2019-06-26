@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+		<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory --><resources mapping="/clever-css/**" location="/resources/clever/css/" /><resources mapping="/clever-fonts/**" location="/resources/clever/fonts/" /><resources mapping="/clever-img/**" location="/resources/clever/img/" /><resources mapping="/clever-js/**" location="/resources/clever/js/" /><resources mapping="/clever-scss/**" location="/resources/clever/scss/" /><resources mapping="/clever/**" location="/resources/clever/" /><resources mapping="/js/**" location="/resources/js/" />
+	
+	<resources mapping="/uploadimgs/**" location="/uploadimgs/"/>
+	
+	<resources mapping="/images/**" location="/resources/images/" />
+	<resources mapping="/css/**" location="/resources/css/" />
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/login/**" location="/resources/js/login" />
+	<resources mapping="/diary/resources/**" location="/resources/" />
+	<resources mapping="/diary/images/**" location="/resources/images/" />
+	<resources mapping="/diary/css/**" location="/resources/css/" />
+	<resources mapping="/diary/font/**" location="/resources/font/" />
+	<resources mapping="/diary/fonts/**" location="/resources/fonts/" />
+	<resources mapping="/diary/common-css/**" location="/resources/common-css/" />
+	<resources mapping="/diary/common-js/**" location="/resources/common-js/" />
+	<resources mapping="/diary/layout-1/**" location="/resources/layout-1/" />
+	<resources mapping="/diary/single-post-2/**" location="/resources/single-post-2/" />
+	<resources mapping="/diary/front-page-category/**" location="/resources/front-page-category/" />
+	<resources mapping="/diary/blank-static/**" location="/resources/blank-static/" />
+	<resources mapping="/diary/summernote/**" location="/resources/summernote/" />
+	<resources mapping="/board/uploadimg/**" location="/board/uploadimg/"/>
+	
+	<resources mapping="/board/resources/board/css/**" location="/resources/board/css/"/>
+	<resources mapping="/board/resources/board/js/**" location="/resources/board/js/"/>
+	<resources mapping="/board/resources/board/images/**" location="/resources/board/images/"/>
+	<resources mapping="/board/resources/board/assets/css/**" location="/resources/board/assets/css/"/>
+	<resources mapping="/board/resources/board/assets/js/**" location="/resources/board/assets/js/"/>
+	<resources mapping="/board/resources/board/assets/fonts/**" location="/resources/board/assets/fonts/"/>
+	<resources mapping="/board/images/**" location="/resources/images/"/>
+	
+	<resources mapping="/admin/admin_bootstrap/**" location="/resources/admin_bootstrap/" />
+	<resources mapping="/admin/admin_font-awesome/**" location="/resources/admin_font-awesome/" />
+	<resources mapping="/admin/admin_Ionicons/**" location="/resources/admin_Ionicons/" />
+	<resources mapping="/admin/admin_dist/**" location="/resources/admin_dist/" />
+	<resources mapping="/admin/admin_jquery/**" location="/resources/admin_jquery/" />
+	<resources mapping="/admin/admin_plugin/**" location="/resources/admin_plugin/" />
+	<resources mapping="/admin/css/**" location="/resources/css/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	
+	<!-- (8) 파일 업로드용 resolver -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="defaultEncoding" value="UTF-8" />
+		<!-- max upload size in bytes -->
+        <beans:property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
+        <!-- max size of file in memory (in bytes) -->
+        <beans:property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
+	</beans:bean>
+	
+	<context:component-scan base-package="com.cndy" />
+	
+</beans:beans>

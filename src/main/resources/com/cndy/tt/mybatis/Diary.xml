@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cndy.tt.mybatis.Diary">
+	
+
+	<resultMap id="diaryResult" type="Diary">
+        <result property="diary_no" column="DIARY_NO"/>
+        <result property="email" column="EMAIL"/>
+        <result property="title" column="TITLE"/>
+        <result property="region" column="REGION"/>
+        <result property="start_date" column="START_DATE"/>
+        <result property="end_date" column="END_DATE"/>
+        <result property="diary_content" column="DIARY_CONTENT"/>
+        <result property="company" column="COMPANY"/>
+        <result property="write_date" column="WRITE_DATE"/>
+        <result property="count_read" column="COUNT_READ"/>
+        <result property="user_like" column="USER_LIKE"/>
+	</resultMap>
+	
+	<select id="diarySelectAll" resultType="Diary">
+       select * from TOUR_DIARY order by diary_no desc
+    </select>
+
+    <select id="diaryContent" resultType="Diary" parameterType="long">
+    	select * from TOUR_DIARY where DIARY_NO=#{diary_no}
+    </select>
+	
+	<insert id="diaryInsert" parameterType="Diary">
+	   insert into TOUR_DIARY values( TOUR_DIARY_SEQ.nextval, #{email}, #{title}, 
+	   		#{region}, SYSDATE , SYSDATE , #{diary_content}, #{company}, 
+	   		SYSDATE, 0, 0 )
+	</insert>
+	
+	<delete id="diaryDelete" parameterType="long">
+	   delete from TOUR_DIARY where DIARY_NO = #{diary_no}
+	</delete>	 
+	
+	<update id="diaryCountRead" parameterType="long">
+		update TOUR_DIARY set COUNT_READ = COUNT_READ +1 where DIARY_NO=#{diary_no}
+	</update>
+	
+	<update id="diaryEdit" parameterType="Diary">
+		update TOUR_DIARY set TITLE=#{title}, EMAIL=#{email}, REGION=#{region}, 
+			COMPANY=#{company}, DIARY_CONTENT=#{diary_content} where DIARY_NO=#{diary_no}
+	</update>	
+	
+	<select id="diaryThisMonth" resultType="int">
+		select count(*) from TOUR_DIARY where WRITE_DATE between (select trunc(sysdate,'mm') from dual) and (select last_day(sysdate) from dual)
+	</select>
+	
+	<select id="diaryThisWeek" resultType="int">
+		select count(*) from TOUR_DIARY where WRITE_DATE between (select sysdate + 1 - to_char(sysdate, 'd') from dual) and (select sysdate + 7 - to_char(sysdate, 'd') from dual)
+	</select>
+	
+	<update id="userLike" parameterType="long">
+		update TOUR_DIARY set USER_LIKE = USER_LIKE +1 where DIARY_NO=#{diary_no}
+	</update>
+</mapper>
