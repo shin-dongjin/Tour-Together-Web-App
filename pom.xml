@@ -59,10 +59,11 @@
 
 		<dependency>
 		    <groupId>com.oracle</groupId>
-		    <artifactId>ojdbc6</artifactId>
-		    <version>12.1.0.1-atlassian-hosted</version>
+		    <artifactId>ojdbc8</artifactId>
+		    <version>12.2.0.1</version>
 		</dependency>
-	
+		
+
 		<!-- JSON -->
 		  <dependency>
 		      <groupId>com.googlecode.json-simple</groupId>
@@ -277,7 +278,9 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>        
+	
 	</dependencies>
+	
     <build>
         <plugins>
             <plugin>
@@ -314,6 +317,7 @@
                     <mainClass>org.test.int1.Main</mainClass>
                 </configuration>
             </plugin>
+ 
         </plugins>
     </build>
 </project>
